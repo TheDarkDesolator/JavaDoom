@@ -16,7 +16,7 @@ import com.impalah.JDoomK1.model.environment.Environment;
 import com.impalah.JDoomK1.spring.JDoomK1Application;
 import com.impalah.JDoomK1.util.LogUtils;
 
-public class MyPanel extends JPanel implements ActionListener{
+public class GamePanel extends JPanel implements ActionListener{
 	
 	private RenderEnvironment2D renderer2D;
 	private RenderObjects renderObj;
@@ -27,7 +27,7 @@ public class MyPanel extends JPanel implements ActionListener{
 	
 	
 
-	public MyPanel(RenderEnvironment2D renderer2d, Environment env, Player player, RenderObjects renderObj) {
+	public GamePanel(RenderEnvironment2D renderer2d, Environment env, Player player, RenderObjects renderObj) {
 		super();
 		renderer2D = renderer2d;
 		this.renderObj = renderObj;
@@ -49,10 +49,11 @@ public class MyPanel extends JPanel implements ActionListener{
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getWidth(), getHeight());
 		
-		renderer2D.drawDebugData(g2, env, 10, 10, "Xpos: " + player.getPosX() + " - Ypos: " + player.getPosY() + " Rotation: " + player.getRotation() +" | Time: " + LocalDateTime.now());
-		renderer2D.drawDebugData(g2, env, 10, 20, "Left: " + renderObj.isRotateLeft() + " Right: " + renderObj.isRotateRight()  + " Up: " + renderObj.isMoveForward()  + " Down: " + renderObj.isMoveBackward() );
-		renderer2D.drawPlayer(g2, player, getWidth(), getHeight());
-		renderer2D.drawMap(g2, env, getWidth(), getHeight());
+		renderer2D.drawDebugData(g2, 10, 10, "Xpos: " + player.getPosX() + " - Ypos: " + player.getPosY() + " Rotation: " + player.getRotation() +" | Time: " + LocalDateTime.now());
+		renderer2D.drawDebugData(g2, 10, 20, "Left: " + renderObj.isRotateLeft() + " Right: " + renderObj.isRotateRight()  + " Up: " + renderObj.isMoveForward()  + " Down: " + renderObj.isMoveBackward() );
+		renderer2D.drawDebugData(g2, 10, 30, "Current Sector: " + player.getCurrentSector().getId().toString());
+		renderer2D.drawPlayer(g2, env, player, getWidth(), getHeight());
+		renderer2D.drawMap(g2, env, getWidth(), getHeight(),0,0,0,1, player);
 		
 	}
 

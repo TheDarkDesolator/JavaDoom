@@ -15,7 +15,7 @@ public class Environment {
 	//      |-------|
 	//--------------------
 	//      |+++++++|
-	private List<Vertex> portals;
+	private List<Wall> portals;
 	
 	public Environment() {
 		this.sectors = new ArrayList<Sector>();

@@ -1,5 +1,10 @@
 package com.impalah.JDoomK1.model;
 
+import java.awt.Point;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.impalah.JDoomK1.model.environment.Sector;
 
 public class Player {
@@ -10,7 +15,7 @@ public class Player {
 	//player hitbox
 	private final int RADIUS = 10;
 	
-	private final double SPEED = .5;
+	private final double SPEED = 5;
 	private final int ROTATIONSPEED = 5;
 	
 	
@@ -50,14 +55,9 @@ public class Player {
 	
 	public void centerAtCurrentSector() {
 		
-		int posXEnd = currentSector.getVertices().get(1).getEndX();
-		int posXStart = currentSector.getVertices().get(1).getStartX();
+		setPosX(currentSector.getSectorCenter().x);
+		setPosY(currentSector.getSectorCenter().y);
 		
-		int posYEnd = currentSector.getVertices().get(0).getEndY();
-		int posYStart = currentSector.getVertices().get(0).getStartY();
-		
-		this.posX = posXEnd - posXStart;
-		this.posY = posYEnd - posYStart;
 	}
 
 

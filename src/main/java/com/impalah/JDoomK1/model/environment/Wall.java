@@ -2,7 +2,7 @@ package com.impalah.JDoomK1.model.environment;
 
 import java.util.Map;
 
-public class Vertex implements Comparable<Vertex> {
+public class Wall implements Comparable<Wall> {
 	
 	public int startX;
 	public int startY;
@@ -11,7 +11,7 @@ public class Vertex implements Comparable<Vertex> {
 	public int endY;
 	
 	
-	public Vertex() {
+	public Wall() {
 		this.startX = 0;
 		this.startY = 0;
 		this.endX = 0;
@@ -19,7 +19,7 @@ public class Vertex implements Comparable<Vertex> {
 	}
 	
 	
-	public Vertex(int startX, int startY, int endX, int endY) {
+	public Wall(int startX, int startY, int endX, int endY) {
 		super();
 		this.startX = startX;
 		this.startY = startY;
@@ -87,7 +87,7 @@ public class Vertex implements Comparable<Vertex> {
 
 
 	@Override
-	public int compareTo(Vertex o) {
+	public int compareTo(Wall o) {
 		if(startX == o.startX && startY == o.startY && endX == o.endX && endY == o.endY) return 0;
 		
 		return 1;
