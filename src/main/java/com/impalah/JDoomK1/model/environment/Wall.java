@@ -1,5 +1,6 @@
 package com.impalah.JDoomK1.model.environment;
 
+import java.awt.Point;
 import java.util.Map;
 
 public class Wall implements Comparable<Wall> {
@@ -25,6 +26,13 @@ public class Wall implements Comparable<Wall> {
 		this.startY = startY;
 		this.endX = endX;
 		this.endY = endY;
+	}
+	
+	public Wall(Point start, Point end) {
+		this.startX = start.x;
+		this.startY = start.y;
+		this.endX = end.x;
+		this.endY = end.y;
 	}
 
 

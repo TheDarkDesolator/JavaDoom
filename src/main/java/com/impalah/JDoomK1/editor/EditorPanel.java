@@ -95,6 +95,7 @@ public class EditorPanel extends JPanel implements ActionListener{
 	public EditorPanel() {
 		nearestPoint = new Point(0,0);
 		
+		env = new Environment();
 		env = Seed.seedEnvironment();
 		
 		ENV_STEPS = env.getMAX_X()/100;
@@ -332,7 +333,22 @@ public class EditorPanel extends JPanel implements ActionListener{
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
 				if(newSectorMode) {
-					pointsClicked.add(nearestPoint);
+					if(pointsClicked.size() > 0 && nearestPoint.equals(pointsClicked.get(0))) {
+						
+							if(pointsClicked.size()> 2) {
+								
+								env.sectors.add(Sector.createFromPoints(pointsClicked, Color.red));
+								pointsClicked = new ArrayList<Point>();
+								newSector.setLabel("New sector");
+								newSectorMode = false;
+								
+							} else LogUtils.logError("Can't create a sector with only 1 wall!", this.getClass(), null);
+						
+					}
+					else {
+						pointsClicked.add(nearestPoint);
+					}
+					
 				}
 			}
 		});
@@ -362,18 +378,22 @@ public class EditorPanel extends JPanel implements ActionListener{
 				renderer.drawVertex(g, env, point, 700 + PANELOFFSET, 700 + PANELOFFSET, PANELOFFSET, framePosX, framePosY, scale, 6, Color.yellow);
 			}
 			
+			if(pointsClicked.size() > 0)
+			renderer.drawWall(g, env, new Wall(pointsClicked.get(pointsClicked.size()-1), nearestPoint), 700 + PANELOFFSET, 700 + PANELOFFSET ,PANELOFFSET, framePosX, framePosY, scale,Color.yellow);
+			
+			
 			if(pointsClicked.size() > 1) {
-				for (int i = 0; i < pointsClicked.size(); i++) {
+				for (int i = 0; i < pointsClicked.size() - 1; i++) {
 					Point currentPoint = pointsClicked.get(i);
 					Point nextPoint = new Point();
 					if(i +1 == pointsClicked.size()) {
 						nextPoint = pointsClicked.get(0);
 						 
 					} else nextPoint = pointsClicked.get(i+1);
-					Wall w = new Wall(currentPoint.x, currentPoint.y, (int) nextPoint.getX(),(int) nextPoint.getY());
-					renderer.drawWall(g, env, w, 700 + PANELOFFSET, 700 + PANELOFFSET, PANELOFFSET, framePosX, framePosY, scale, Color.yellow);
+					renderer.drawWall(g, env, new Wall(currentPoint, nextPoint), 700 + PANELOFFSET, 700 + PANELOFFSET, PANELOFFSET, framePosX, framePosY, scale, Color.yellow);
 				}
-			}
+				
+				}
 		}
 		
 		

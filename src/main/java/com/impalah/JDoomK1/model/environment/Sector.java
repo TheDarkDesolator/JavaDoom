@@ -20,10 +20,25 @@ public class Sector {
 	}
 
 	public Sector(List<Wall> vertices, Color color) {
-		super();
 		this.vertices = vertices;
 		this.color = color;
 		this.id = UUID.randomUUID();
+	}
+	
+	public static Sector createFromPoints(List<Point> points, Color color) {
+		List<Wall> walls = new ArrayList<>();
+		for (int i = 0; i < points.size(); i++) {
+			Point currentPoint = points.get(i);
+			Point nextPoint = new Point();
+			if(i +1 == points.size()) {
+				nextPoint = points.get(0);
+				 
+			} else nextPoint = points.get(i+1);
+			
+			walls.add(new Wall(currentPoint, nextPoint));
+		}
+		
+		return new Sector(walls, color);
 	}
 	
 	public void addVertex(Wall v) {
