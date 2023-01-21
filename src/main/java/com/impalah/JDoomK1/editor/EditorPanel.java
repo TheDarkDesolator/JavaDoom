@@ -444,7 +444,7 @@ public class EditorPanel extends JPanel implements ActionListener{
 		//LogUtils.logInfo("MouseLocation: {} - {}", this.getClass(), new Object[] {mouseLocation.x, mouseLocation.y});
 		float pointX = Math.round(mouseLocation.x / 100.0f) * 100;
 		float pointY = Math.round(mouseLocation.y / 100.0f) * 100;
-		LogUtils.logInfo("Nearest point: {} - {}", this.getClass(), new Object[] {pointX, pointY});
+		//LogUtils.logInfo("Nearest point: {} - {}", this.getClass(), new Object[] {pointX, pointY});
 		this.nearestPoint = new Point(  (int) pointX, (int) pointY);
 		renderer.drawVertex(g, env, nearestPoint, 700+PANELOFFSET, 700+PANELOFFSET, PANELOFFSET, framePosX, framePosY, scale,6, Color.yellow);	
 		

@@ -16,7 +16,6 @@ public class Wall implements Comparable<Wall> {
 		this.startX = 0;
 		this.startY = 0;
 		this.endX = 0;
-		this.endY = 0;
 	}
 	
 	
@@ -90,6 +89,8 @@ public class Wall implements Comparable<Wall> {
 	public void setEndY(int endY) {
 		this.endY = endY;
 	}
+	
+
 
 
 

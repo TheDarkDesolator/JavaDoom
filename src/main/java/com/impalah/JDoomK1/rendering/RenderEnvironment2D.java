@@ -61,7 +61,21 @@ public class RenderEnvironment2D {
 	}
 	
 	public void drawWall(Graphics g, Environment env, Wall wall, int maxWidth, int maxHeight, int canvasOffset, int offsetX, int offsetY, double scale, Color c) {
+		
+		
+		//float b = wall.getStartY() - (wall.getStartX() * m);
+		
+		//205 = 555 * -0.2 + b
+		//205 = 555 * -0.2 + 280
+		// ? = 555 * -0.2 + 280
+		
+		
 		Wall w = convertWallToScreenSize(env, wall, maxWidth - canvasOffset, maxHeight - canvasOffset, scale);
+		
+		
+		
+		//LogUtils.logInfo("start ({}, {}) end ({},{}), m= {} b= {}", this.getClass(), new Object[] {w.getStartX(), w.getStartY(), w.getEndX(), w.getEndY(), m});
+		
 		
 		w.setStartX(w.getStartX() - (int)(offsetX * scale) );
 		w.setEndX(w.getEndX() - (int)(offsetX * scale));
@@ -73,18 +87,25 @@ public class RenderEnvironment2D {
 		w.setEndX(w.getEndX() + canvasOffset);
 		w.setEndY(w.getEndY() + canvasOffset);
 		
-		//LogUtils.logInfo("StartX: {} StartY: {} EndX: {} EndY: {}", this.getClass(), new Object[] {w.getStartX(), w.getStartY(), w.getEndX(), w.getEndY()});
-			
-			if(w.getStartX() < canvasOffset) {
+		Point intersectionStartY = getIntersectionStartY(w, canvasOffset);
+		Point intersectionX = getIntersectionX(w, canvasOffset);
+		
+		LogUtils.logInfo("intersectionStartY: {} intersectionStartX: {}", this.getClass(), new Object[] {intersectionStartY.y, intersectionX.x});
+	
+		
+		g.setColor(Color.pink);
+		g.fillOval(canvasOffset - 3, intersectionStartY.y - 3, 6, 6);
+		g.fillOval(intersectionX.x - 3, canvasOffset - 3, 6, 6);
+		
+		//LogUtils.logInfo("start ({}, {}) end ({},{}), m= {} bStart= {}, bEnd= {}", this.getClass(), new Object[] {w.getStartX(), w.getStartY(), w.getEndX(), w.getEndY(), m,b});
+		
+		
+		
+			/*if(w.getStartX() < canvasOffset) {
+				
 				w.setStartX(canvasOffset-1);
 			} else if(w.getStartX() > maxWidth) {
 				w.setStartX(maxWidth+1);
-			}
-			
-			if(w.getEndX() < canvasOffset) {
-				w.setEndX(canvasOffset-1);
-			} else if(w.getEndX() > maxWidth) {
-				w.setEndX(maxWidth+1);
 			}
 			
 			if(w.getStartY() < canvasOffset) {
@@ -93,7 +114,13 @@ public class RenderEnvironment2D {
 				w.setStartY(maxHeight+1);
 			}
 			
-			if(w.getEndY() < canvasOffset) {
+			if(w.getEndX() < canvasOffset) {
+				w.setEndX(canvasOffset-1);
+			} else if(w.getEndX() > maxWidth) {
+				w.setEndX(maxWidth+1);
+			}
+			
+			if(w.getEndY() < canvasOffset && w.getEndX() > canvasOffset) {
 				w.setEndY(canvasOffset-1);
 			} else if(w.getEndY() > maxHeight) {
 				w.setEndY(maxHeight+1);
@@ -102,7 +129,8 @@ public class RenderEnvironment2D {
 			
 			if((w.getStartX() < canvasOffset && w.getStartY() < canvasOffset) && (w.getEndX() > maxWidth && w.getEndY() > maxHeight)) {
 				
-			} else drawLineBetweenVertices(g, w, c);
+			} else */
+				drawLineBetweenVertices(g, w, c);
 	}
 	
 	public void drawVertex(Graphics g, Environment env, Point p, int maxWidth, int maxHeight, int canvasOffset, int offsetX, int offsetY, double scale, int size, Color c) {
@@ -196,13 +224,35 @@ public class RenderEnvironment2D {
 		return new Point(newX, newY );
 	}
 	
-public Point convertPointToEnvironmentSize(Environment env, Point p, int maxWidth, int maxHeight) {
+	public Point convertPointToEnvironmentSize(Environment env, Point p, int maxWidth, int maxHeight) {
 		
 		double multiplierX = (double)  env.getMAX_X() / maxWidth;
 		double multiplierY = (double) env.getMAX_Y() / maxHeight;
 		
 		return new Point((int) Math.round(p.x * multiplierX), (int) Math.round(p.y * multiplierY));
 	}
+	
+	public Point getIntersectionStartY(Wall w, int canvasOffset) {
+		float m = ((float)w.getStartY() - w.getEndY()) / ((float)(w.getStartX() - w.getEndX() == 0 ? 1 : ((float)w.getStartX() - w.getEndX())));
+		float b = w.getStartY() - (w.getStartX() * m);
+		
+		int x = (int)((b - 700) / (1 - b)) + canvasOffset;
+		float y = m * x + b;
+		
+		return new Point(canvasOffset, (int)y);
+	}
+	
+	
+	public Point getIntersectionX(Wall w, int canvasOffset) {
+		float m = ((float)w.getStartY() - w.getEndY()) / ((float)(w.getStartX() - w.getEndX() == 0 ? 1 : ((float)w.getStartX() - w.getEndX())));
+		float b = w.getStartY() - (w.getStartX() * m);
+		
+		float x = b / m;
+		//0 = 
+		
+		return new Point((int) x , canvasOffset);
+	}
+	
 	public void drawLineBetweenVertices(Graphics g, Wall v, Color c) {
 		g.setColor(c);
 		g.drawLine(v.startX, 
@@ -210,5 +260,6 @@ public Point convertPointToEnvironmentSize(Environment env, Point p, int maxWidt
 				   v.endX, 
 				   v.endY);
 	}
+	
 
 }
