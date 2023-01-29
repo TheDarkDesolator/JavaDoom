@@ -20,42 +20,42 @@ public class Seed {
 		
 		List<Wall> sector1Vertices = new ArrayList<Wall>();
 		
-		//sector1Vertices.add(new Wall(2500,2500,2500,7500));
-		//sector1Vertices.add(new Wall(2500,7500,7500,7500));
-		//sector1Vertices.add(new Wall(7500,7500,7500,2500));
-		sector1Vertices.add(new Wall(7500,2500,2500,3500));
+		sector1Vertices.add(new Wall(2500,2500,2500,7500));
+		sector1Vertices.add(new Wall(2500,7500,7500,7500));
+		sector1Vertices.add(new Wall(7500,7500,7500,2500));
+		sector1Vertices.add(new Wall(2500,2500, 7500,2500));
 		
 		sector1.setColor(Color.red);
 		sector1.setVertices(sector1Vertices);
 		
-//		Sector sector2 = new Sector();
-//		
-//		List<Wall> sector2Vertices = new ArrayList<Wall>();
-//		
-//		sector2Vertices.add(new Wall(1200,3800,1200,6200));
-//		sector2Vertices.add(new Wall(1200,6200,2500,6200));
-//		sector2Vertices.add(new Wall(2500,6200,2500,3800));
-//		sector2Vertices.add(new Wall(2500,3800,1200,3800));
-//		
-//		sector2.setColor(Color.green);
-//		sector2.setVertices(sector2Vertices);
-//		
-//		Sector sector3 = new Sector();
-//		
-//		List<Wall> sector3Vertices = new ArrayList<Wall>();
-//		
-//		sector3Vertices.add(new Wall(7500,3800,7500,6300));
-//		sector3Vertices.add(new Wall(7500,6300,8700,6300));
-//		sector3Vertices.add(new Wall(8700,6300,8700,3800));
-//		sector3Vertices.add(new Wall(8700,3800,7500,3800));
-//		
-//		sector3.setColor(Color.yellow);
-//		sector3.setVertices(sector3Vertices);
+		Sector sector2 = new Sector();
+		
+		List<Wall> sector2Vertices = new ArrayList<Wall>();
+		
+		sector2Vertices.add(new Wall(1200,3800,1200,6200));
+		sector2Vertices.add(new Wall(1200,6200,2500,6200));
+		sector2Vertices.add(new Wall(2500,6200,2500,3800));
+		sector2Vertices.add(new Wall(2500,3800,1200,3800));
+		
+		sector2.setColor(Color.green);
+		sector2.setVertices(sector2Vertices);
+		
+		Sector sector3 = new Sector();
+		
+		List<Wall> sector3Vertices = new ArrayList<Wall>();
+		
+		sector3Vertices.add(new Wall(7500,3800,7500,6300));
+		sector3Vertices.add(new Wall(7500,6300,8700,6300));
+		sector3Vertices.add(new Wall(8700,6300,8700,3800));
+		sector3Vertices.add(new Wall(8700,3800,7500,3800));
+		
+		sector3.setColor(Color.yellow);
+		sector3.setVertices(sector3Vertices);
 		
 		
 		sectors.add(sector1);
-		//sectors.add(sector2);
-		//sectors.add(sector3);
+		sectors.add(sector2);
+		sectors.add(sector3);
 		env.setSectors(sectors);
 		
 		

@@ -87,50 +87,75 @@ public class RenderEnvironment2D {
 		w.setEndX(w.getEndX() + canvasOffset);
 		w.setEndY(w.getEndY() + canvasOffset);
 		
+		//Left side and bottom of plane intersection
 		Point intersectionStartY = getIntersectionStartY(w, canvasOffset);
-		Point intersectionX = getIntersectionX(w, canvasOffset);
+		Point intersectionStartX = getIntersectionStartX(w, canvasOffset);
 		
-		LogUtils.logInfo("intersectionStartY: {} intersectionStartX: {}", this.getClass(), new Object[] {intersectionStartY.y, intersectionX.x});
+		//right side and top of plane intersection
+		Point intersectionEndY = getIntersectionEndY(w, canvasOffset);
+		Point intersectionEndX = getIntersectionEndX(w, canvasOffset);
+		
+		LogUtils.logInfo("intersectionEndY: {} intersectionEndX: {}", this.getClass(), new Object[] {intersectionEndY.y, intersectionEndX.x});
 	
 		
-		g.setColor(Color.pink);
-		g.fillOval(canvasOffset - 3, intersectionStartY.y - 3, 6, 6);
-		g.fillOval(intersectionX.x - 3, canvasOffset - 3, 6, 6);
+		/*g.setColor(Color.pink);
+		g.fillOval(canvasOffset - 6, intersectionStartY.y - 6, 12, 12);
+		g.fillOval(intersectionStartX.x - 6, canvasOffset - 6, 12, 12);
+		
+		g.fillOval(maxWidth - 6, intersectionEndY.y - 6, 12, 12);
+		g.fillOval(intersectionEndX.x - 6, maxWidth - 6, 12, 12);*/
 		
 		//LogUtils.logInfo("start ({}, {}) end ({},{}), m= {} bStart= {}, bEnd= {}", this.getClass(), new Object[] {w.getStartX(), w.getStartY(), w.getEndX(), w.getEndY(), m,b});
 		
 		
+			//Startpoint boundaries
+			Wall cutOffWall = new Wall(w.getStartX(), w.getStartY(), w.getEndX(), w.getEndY());
 		
-			/*if(w.getStartX() < canvasOffset) {
-				
-				w.setStartX(canvasOffset-1);
-			} else if(w.getStartX() > maxWidth) {
-				w.setStartX(maxWidth+1);
+			//Endpoint
+			if(w.getStartX() < canvasOffset) {
+				cutOffWall.setStartY(intersectionStartY.y);
+				cutOffWall.setStartX(canvasOffset);
+			}
+			
+			if(w.getStartX() > maxWidth) {
+				cutOffWall.setStartY(intersectionEndY.y);
+				cutOffWall.setStartX(canvasOffset + 700);
 			}
 			
 			if(w.getStartY() < canvasOffset) {
-				w.setStartY(canvasOffset-1);
-			} else if(w.getStartY() > maxHeight) {
-				w.setStartY(maxHeight+1);
+				cutOffWall.setStartX(intersectionStartX.x);
+				cutOffWall.setStartY(canvasOffset);
+			}
+			if(w.getStartY() > maxHeight) {
+				cutOffWall.setStartX(intersectionEndX.x);
+				cutOffWall.setStartY(canvasOffset + 700);
 			}
 			
 			if(w.getEndX() < canvasOffset) {
-				w.setEndX(canvasOffset-1);
-			} else if(w.getEndX() > maxWidth) {
-				w.setEndX(maxWidth+1);
+				cutOffWall.setEndY(intersectionStartY.y);
+				cutOffWall.setEndX(canvasOffset);
 			}
 			
-			if(w.getEndY() < canvasOffset && w.getEndX() > canvasOffset) {
-				w.setEndY(canvasOffset-1);
-			} else if(w.getEndY() > maxHeight) {
-				w.setEndY(maxHeight+1);
+			if(w.getEndX() > maxWidth) {
+				cutOffWall.setEndY(intersectionEndY.y);
+				cutOffWall.setEndX(canvasOffset + 700);
 			}
 			
-			
-			if((w.getStartX() < canvasOffset && w.getStartY() < canvasOffset) && (w.getEndX() > maxWidth && w.getEndY() > maxHeight)) {
+			if(w.getEndY() < canvasOffset) {
+				cutOffWall.setEndX(intersectionStartX.x);
+				cutOffWall.setEndY(canvasOffset);
+			}
+			if(w.getEndY() > maxHeight) {
+				cutOffWall.setEndX(intersectionEndX.x);
+				cutOffWall.setEndY(canvasOffset + 700);
+			}
+		
+			if(!determinPointOnScreen(new Point(cutOffWall.getStartX(), cutOffWall.getStartY()), canvasOffset, maxWidth) &&
+					!determinPointOnScreen(new Point(cutOffWall.getEndX(), cutOffWall.getEndY()), canvasOffset, maxWidth)) {
 				
-			} else */
-				drawLineBetweenVertices(g, w, c);
+			} else drawLineBetweenVertices(g, cutOffWall, c);
+			
+				
 	}
 	
 	public void drawVertex(Graphics g, Environment env, Point p, int maxWidth, int maxHeight, int canvasOffset, int offsetX, int offsetY, double scale, int size, Color c) {
@@ -236,21 +261,53 @@ public class RenderEnvironment2D {
 		float m = ((float)w.getStartY() - w.getEndY()) / ((float)(w.getStartX() - w.getEndX() == 0 ? 1 : ((float)w.getStartX() - w.getEndX())));
 		float b = w.getStartY() - (w.getStartX() * m);
 		
-		int x = (int)((b - 700) / (1 - b)) + canvasOffset;
+		//int x = (int)((b - 700) / (1 - b)) + canvasOffset;
+		int x = canvasOffset;
 		float y = m * x + b;
 		
 		return new Point(canvasOffset, (int)y);
 	}
 	
 	
-	public Point getIntersectionX(Wall w, int canvasOffset) {
+	public Point getIntersectionStartX(Wall w, int canvasOffset) {
 		float m = ((float)w.getStartY() - w.getEndY()) / ((float)(w.getStartX() - w.getEndX() == 0 ? 1 : ((float)w.getStartX() - w.getEndX())));
 		float b = w.getStartY() - (w.getStartX() * m);
 		
-		float x = b / m;
-		//0 = 
+		LogUtils.logInfo("X: {} Y: {}, M: {}, B: {}", this.getClass(), new Object[] {w.getEndX(), w.getEndY(), m, b});
 		
-		return new Point((int) x , canvasOffset);
+		//0 = 401 * -0.19908814 + 240.83435
+		
+		double x = (b - 30) / (m-0);
+		return new Point((int) -x, canvasOffset);
+	}
+	
+	public Point getIntersectionEndY(Wall w, int canvasOffset) {
+		float m = ((float)w.getStartY() - w.getEndY()) / ((float)(w.getStartX() - w.getEndX() == 0 ? 1 : ((float)w.getStartX() - w.getEndX())));
+		float b = w.getStartY() - (w.getStartX() * m);
+		
+		//panelwidth  + offset;
+		int x = 700+canvasOffset;
+		float y = m * x + b;
+		
+		return new Point(canvasOffset, (int)y);
+	}
+	
+	public Point getIntersectionEndX(Wall w, int canvasOffset) {
+		float m = ((float)w.getStartY() - w.getEndY()) / ((float)(w.getStartX() - w.getEndX() == 0 ? 1 : ((float)w.getStartX() - w.getEndX())));
+		float b = w.getStartY() - (w.getStartX() * m);
+		
+		LogUtils.logInfo("X: {} Y: {}, M: {}, B: {}", this.getClass(), new Object[] {w.getEndX(), w.getEndY(), m, b});
+		
+		//0 = 401 * -0.19908814 + 240.83435
+		
+		double x = (b - 730) / (m-0);
+		return new Point((int) -x, canvasOffset);
+	}
+	
+	public boolean determinPointOnScreen(Point p, int canvasOffset, int maxWidth) {
+		if(p.x >= canvasOffset && p.x <= maxWidth && p.y >= canvasOffset && p.y <= maxWidth ) {
+			return true;
+		} else return false;
 	}
 	
 	public void drawLineBetweenVertices(Graphics g, Wall v, Color c) {
@@ -261,5 +318,6 @@ public class RenderEnvironment2D {
 				   v.endY);
 	}
 	
+	// 700 = -700*0 + 0
 
 }
