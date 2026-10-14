@@ -17,9 +17,6 @@ public class CalculationValues {
 			this.allCos[i] = Math.cos(i/180.0*Math.PI);
 			this.allSin[i] = Math.sin(i/180.0*Math.PI);
 		}
-		
-		
-		
 	}
 
 	public double cos(int rotation) {

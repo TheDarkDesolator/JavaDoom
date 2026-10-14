@@ -4,15 +4,14 @@ import java.awt.Container;
 
 import javax.swing.JFrame;
 
+import com.impalah.JDoomK1.rendering.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.impalah.JDoomK1.controls.KeyboardMotion;
 import com.impalah.JDoomK1.model.Player;
 import com.impalah.JDoomK1.model.environment.Environment;
-import com.impalah.JDoomK1.rendering.GamePanel;
-import com.impalah.JDoomK1.rendering.RenderEnvironment2D;
-import com.impalah.JDoomK1.rendering.RenderObjects;
 import com.impalah.JDoomK1.util.Seed;
+import org.springframework.beans.factory.annotation.Value;
 
 public class Game {
 	
@@ -21,6 +20,11 @@ public class Game {
 	
 	@Autowired
 	private RenderEnvironment2D renderer2D;
+
+	private MovingWorldRenderer movingWorldRenderer;
+
+	@Value("${doom.config.engine.mode}")
+	private String renderMode;
 	
 	public void startGame() {
 		JFrame frame = new JFrame();
@@ -28,14 +32,22 @@ public class Game {
 		//Container pane = frame.getContentPane();
 		
 		Environment env = Seed.seedEnvironment();
+		//Environment env = Seed.seedOneWall();
 		
-		Player player = new Player(50,50);
+		Player player = new Player(20,50, 10);
 		player.setCurrentSector(env.getSectors().get(0));
 		player.centerAtCurrentSector();
 
 		RenderObjects ro = new RenderObjects(player, env);
-		
-		GamePanel myRenderPanel = new GamePanel(renderer2D, env, player, ro);
+		IRenderWorld engine;
+
+		movingWorldRenderer = new MovingWorldRenderer(env, player);
+
+
+		if(renderMode.equals("MWR")) engine = movingWorldRenderer;
+		else engine = renderer2D;
+
+		GamePanel myRenderPanel = new GamePanel(engine, env, player, ro);
 		myRenderPanel.setSize(SCREEN_X, SCREEN_Y);
 		
 		KeyboardMotion km = new KeyboardMotion(ro, myRenderPanel);

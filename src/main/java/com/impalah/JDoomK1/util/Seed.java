@@ -63,4 +63,30 @@ public class Seed {
 		return env;
 	}
 
+	public static Environment seedOneWall(){
+
+		Environment env = new Environment();
+
+		List<Sector> sectors = new ArrayList<Sector>();
+
+		Sector sector1 = new Sector();
+
+		List<Wall> sector1Vertices = new ArrayList<Wall>();
+
+		sector1Vertices.add(new Wall(2500,2500,2500,7500));
+		sector1Vertices.add(new Wall(2500,7500,7500,7500));
+		sector1Vertices.add(new Wall(7500,7500,7500,2500));
+		sector1Vertices.add(new Wall(2500,2500, 7500,2500));
+
+		sector1.setColor(Color.red);
+		sector1.setVertices(sector1Vertices);
+
+		sectors.add(sector1);
+		env.setSectors(sectors);
+
+		return env;
+
+
+	}
+
 }

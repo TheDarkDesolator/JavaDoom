@@ -24,6 +24,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.impalah.JDoomK1.rendering.RenderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.impalah.JDoomK1.model.environment.Environment;
@@ -285,7 +286,7 @@ public class EditorPanel extends JPanel implements ActionListener{
 				
 				Point newPosition = new Point((int) ((posX / scale) + framePosX), (int) ((posY/scale) + framePosY));
 				//LogUtils.logInfo("newPosition: {} - {}", this.getClass(), new Object[] {newPosition.x, newPosition.y});
-				mouseLocation = renderer.convertPointToEnvironmentSize(env, 
+				mouseLocation = RenderUtils.convertPointToEnvironmentSize(env,
 																	   newPosition, 
 																	   700, 
 																	   700) ;
@@ -379,7 +380,7 @@ public class EditorPanel extends JPanel implements ActionListener{
 			}
 			
 			if(pointsClicked.size() > 0)
-			renderer.drawWall(g, env, new Wall(pointsClicked.get(pointsClicked.size()-1), nearestPoint), 700 + PANELOFFSET, 700 + PANELOFFSET ,PANELOFFSET, framePosX, framePosY, scale,Color.yellow);
+			renderer.drawWall(g, env, new Wall(pointsClicked.get(pointsClicked.size()-1), nearestPoint), 700 + PANELOFFSET, 700 + PANELOFFSET ,PANELOFFSET, framePosX, framePosY, scale,0,Color.yellow);
 			
 			
 			if(pointsClicked.size() > 1) {
@@ -390,7 +391,7 @@ public class EditorPanel extends JPanel implements ActionListener{
 						nextPoint = pointsClicked.get(0);
 						 
 					} else nextPoint = pointsClicked.get(i+1);
-					renderer.drawWall(g, env, new Wall(currentPoint, nextPoint), 700 + PANELOFFSET, 700 + PANELOFFSET, PANELOFFSET, framePosX, framePosY, scale, Color.yellow);
+					renderer.drawWall(g, env, new Wall(currentPoint, nextPoint), 700 + PANELOFFSET, 700 + PANELOFFSET, PANELOFFSET, framePosX, framePosY, scale,0, Color.yellow);
 				}
 				
 				}
@@ -415,7 +416,7 @@ public class EditorPanel extends JPanel implements ActionListener{
 		 
 		for (int i = 0; i < env.getMAX_X() + ENV_STEPS; i+=ENV_STEPS) {
 			
-			int xPoint = renderer.convertPointToScreenSize(env, new Point(i, 0),700, 700, scale).x;
+			int xPoint = RenderUtils.convertPointToScreenSize(env, new Point(i, 0),700, 700, scale).x;
 			xPoint = xPoint - (int) (framePosX * scale);
 			
 				if(xPoint >= 0 && xPoint <=700) {
@@ -426,7 +427,7 @@ public class EditorPanel extends JPanel implements ActionListener{
 		
 		for (int i = 0; i < env.getMAX_Y() + ENV_STEPS; i+=ENV_STEPS) {
 			
-			int yPoint = renderer.convertPointToScreenSize(env, new Point(0, i),700, 700, scale).y;
+			int yPoint = RenderUtils.convertPointToScreenSize(env, new Point(0, i),700, 700, scale).y;
 			yPoint = yPoint - (int) (framePosY * scale);
 			
 				if(yPoint >= 0 && yPoint <=700) {

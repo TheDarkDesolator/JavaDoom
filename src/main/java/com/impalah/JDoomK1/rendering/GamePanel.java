@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
 import java.time.LocalDateTime;
 
 import javax.swing.JPanel;
@@ -13,23 +12,19 @@ import javax.swing.Timer;
 
 import com.impalah.JDoomK1.model.Player;
 import com.impalah.JDoomK1.model.environment.Environment;
-import com.impalah.JDoomK1.spring.JDoomK1Application;
-import com.impalah.JDoomK1.util.LogUtils;
 
 public class GamePanel extends JPanel implements ActionListener{
 	
-	private RenderEnvironment2D renderer2D;
+	private IRenderWorld engine;
 	private RenderObjects renderObj;
 	private Environment env;
 	private Player player;
 	
 	private final Timer timer = new Timer(20, this);
-	
-	
 
-	public GamePanel(RenderEnvironment2D renderer2d, Environment env, Player player, RenderObjects renderObj) {
+	public GamePanel(IRenderWorld renderer2d, Environment env, Player player, RenderObjects renderObj) {
 		super();
-		renderer2D = renderer2d;
+		engine = renderer2d;
 		this.renderObj = renderObj;
 		this.env = env;
 		this.player = player;
@@ -49,20 +44,22 @@ public class GamePanel extends JPanel implements ActionListener{
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getWidth(), getHeight());
 		
-		renderer2D.drawDebugData(g2, 10, 10, "Xpos: " + player.getPosX() + " - Ypos: " + player.getPosY() + " Rotation: " + player.getRotation() +" | Time: " + LocalDateTime.now());
-		renderer2D.drawDebugData(g2, 10, 20, "Left: " + renderObj.isRotateLeft() + " Right: " + renderObj.isRotateRight()  + " Up: " + renderObj.isMoveForward()  + " Down: " + renderObj.isMoveBackward() );
-		renderer2D.drawDebugData(g2, 10, 30, "Current Sector: " + player.getCurrentSector().getId().toString());
-		renderer2D.drawPlayer(g2, env, player, getWidth(), getHeight());
-		renderer2D.drawMap(g2, env, getWidth(), getHeight(),0,0,0,1, player);
+		RenderUtils.drawDebugData(g2, 10, 10, "Xpos: " + player.getPosX() + " - Ypos: " + player.getPosY() + " Rotation: " + player.getRotation() +" | Time: " + LocalDateTime.now());
+		RenderUtils.drawDebugData(g2, 10, 20, "Left: " + renderObj.isRotateLeft() + " Right: " + renderObj.isRotateRight()  + " Up: " + renderObj.isMoveForward()  + " Down: " + renderObj.isMoveBackward() );
+		RenderUtils.drawDebugData(g2, 10, 40, "Current Sector: " + player.getCurrentSector().getId().toString());
+
+		engine.drawPlayer(g2, env, player, getWidth(), getHeight());
+		engine.drawMap(g2, env, getWidth(), getHeight(),0,0,0,1, player);
+		//renderer2D.drawMapAroundPlayer(g2, env, getWidth(), getHeight(), 0,0,0,1,player);
 		
 	}
 
-	public RenderEnvironment2D getRenderer2D() {
-		return renderer2D;
+	public IRenderWorld getEngine() {
+		return engine;
 	}
 
-	public void setRenderer2D(RenderEnvironment2D renderer2d) {
-		renderer2D = renderer2d;
+	public void setEngine(RenderEnvironment2D renderer2d) {
+		engine = renderer2d;
 	}
 
 	public Environment getEnv() {

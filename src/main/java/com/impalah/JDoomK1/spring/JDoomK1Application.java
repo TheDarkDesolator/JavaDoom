@@ -37,7 +37,6 @@ import com.impalah.JDoomK1.util.LogUtils;
 import com.impalah.JDoomK1.util.Seed;
 
 @SpringBootApplication
-@ComponentScan
 public class JDoomK1Application implements CommandLineRunner{
 	
 	@Value("${doom.mode}")

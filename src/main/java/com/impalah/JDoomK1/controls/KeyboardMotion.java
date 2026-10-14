@@ -93,10 +93,10 @@ public class KeyboardMotion {
 		int keyEvent = 0;
 		
 		switch (name){
-		case "LEFT": keyEvent = KeyEvent.VK_Q; break;
-		case "RIGHT": keyEvent = KeyEvent.VK_D; break;
-		case "UP": keyEvent = KeyEvent.VK_Z; break;
-		case "DOWN": keyEvent = KeyEvent.VK_S; break;
+		case "LEFT": keyEvent = KeyEvent.VK_D; break;
+		case "RIGHT": keyEvent = KeyEvent.VK_Q; break;
+		case "UP": keyEvent = KeyEvent.VK_S; break;
+		case "DOWN": keyEvent = KeyEvent.VK_Z; break;
 		case "STRAFELEFT" : keyEvent = KeyEvent.VK_A; break;
 		case "STRAFERIGHT" : keyEvent = KeyEvent.VK_E; break;
 		}

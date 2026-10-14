@@ -10,23 +10,34 @@ public class Wall implements Comparable<Wall> {
 	
 	public int endX;
 	public int endY;
-	
-	
-	public Wall() {
-		this.startX = 0;
-		this.startY = 0;
-		this.endX = 0;
-	}
-	
-	
-	public Wall(int startX, int startY, int endX, int endY) {
-		super();
+
+	private int startZ;
+	private int endZ;
+
+
+	public Wall(int startX, int startY, int endX, int endY, int startZ, int endZ) {
 		this.startX = startX;
 		this.startY = startY;
 		this.endX = endX;
 		this.endY = endY;
+		this.startZ = startZ;
+		this.endZ = endZ;
 	}
-	
+
+	public Wall(int startX, int startY, int endX, int endY) {
+		this.startX = startX;
+		this.startY = startY;
+		this.endX = endX;
+		this.endY = endY;
+
+		this.startZ = 10;
+		this.endZ = 10;
+	}
+
+	public Wall(){
+
+	}
+
 	public Wall(Point start, Point end) {
 		this.startX = start.x;
 		this.startY = start.y;
@@ -89,6 +100,8 @@ public class Wall implements Comparable<Wall> {
 	public void setEndY(int endY) {
 		this.endY = endY;
 	}
+
+
 	
 
 
