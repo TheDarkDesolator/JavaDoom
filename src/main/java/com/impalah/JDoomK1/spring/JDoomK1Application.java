@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import com.impalah.JDoomK1.game.GameWithMinimap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -56,6 +57,9 @@ public class JDoomK1Application implements CommandLineRunner{
 	
 	@Autowired
 	private Editor editor;
+
+	@Autowired
+	private GameWithMinimap gameWithMinimap;
 	
 
 	@Override
@@ -64,6 +68,8 @@ public class JDoomK1Application implements CommandLineRunner{
 		
 		if(mode.equals("GAME")) {
 			game.startGame();
+		}else if(mode.equals("GAMEWITHMINIMAP")){
+			gameWithMinimap.startGame();
 		}
 		else if(mode.equals("EDITOR")) {
 			editor.startEditor();

@@ -1,5 +1,7 @@
 package com.impalah.JDoomK1.spring;
 
+import com.impalah.JDoomK1.game.Game;
+import com.impalah.JDoomK1.game.GameWithMinimap;
 import com.impalah.JDoomK1.model.CalculationValues;
 import com.impalah.JDoomK1.rendering.MovingWorldRenderer;
 import org.springframework.context.annotation.Bean;
@@ -15,13 +17,13 @@ public class ApplicationConfig {
 	
 	@Bean
 	public RenderEnvironment2D RenderEnvironment2D() {
-		return new RenderEnvironment2D();
+		return new RenderEnvironment2D(700,700);
 	}
 
-	@Bean
+	/*@Bean
 	public MovingWorldRenderer movingWorldRenderer(){
 		return new MovingWorldRenderer();
-	}
+	}*/
 	
 	@Bean
 	public com.impalah.JDoomK1.game.Game Game() {
@@ -31,6 +33,11 @@ public class ApplicationConfig {
 	@Bean 
 	public Editor Editor() {
 		return new Editor();
+	}
+
+	@Bean
+	public GameWithMinimap GameWithMiniMap(){
+		return new GameWithMinimap();
 	}
 
 	@Bean

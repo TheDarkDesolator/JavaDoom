@@ -95,19 +95,18 @@ public class EditorPanel extends JPanel implements ActionListener{
 	
 	public EditorPanel() {
 		nearestPoint = new Point(0,0);
-		
-		env = new Environment();
-		env = Seed.seedEnvironment();
+
+		env = Seed.seedEnvironment(700,700);
 		
 		ENV_STEPS = env.getMAX_X()/100;
 		
 		scrollX = new Scrollbar();
-		scrollX.setBounds(PANELOFFSET, 700 + PANELOFFSET, 700, 20);
+		scrollX.setBounds(PANELOFFSET, env.getPanelHeight() + PANELOFFSET, env.getPanelWidth(), 20);
 		scrollX.setOrientation(Scrollbar.HORIZONTAL);
-		scrollX.setMaximum(700);
+		scrollX.setMaximum(env.getPanelHeight());
 		scrollX.setMinimum(0);
-		scrollX.setUnitIncrement((int) Math.round(700 * scale));
-		scrollX.setVisibleAmount((int) Math.round(700 * scale));
+		scrollX.setUnitIncrement((int) Math.round(env.getPanelHeight() * scale));
+		scrollX.setVisibleAmount((int) Math.round(env.getPanelHeight() * scale));
 		scrollX.setBackground(Color.white);
 		scrollX.addAdjustmentListener(new AdjustmentListener() {
 			
@@ -356,7 +355,7 @@ public class EditorPanel extends JPanel implements ActionListener{
 		
 		
 		
-		renderer = new RenderEnvironment2D();
+		renderer = new RenderEnvironment2D(700,700);
 	}
 	
 	@Override
@@ -371,16 +370,16 @@ public class EditorPanel extends JPanel implements ActionListener{
 		
 		
 		//renderer.drawDebugData(g2, 10 + PANELOFFSET, 10 + PANELOFFSET, "Zoom:" + zoomVal + " X: " + mouseLocation.x + " Y: " + mouseLocation.y);
-		renderer.drawMap(g, env, 700, 700, PANELOFFSET, framePosX,framePosY, scale, null);
+		renderer.drawMap(g, env, new Point(PANELOFFSET, PANELOFFSET), new Point(framePosX, framePosY), scale, null);
 		findNearestPoint(g);
 		
 		if(newSectorMode) {
 			for (Point point : pointsClicked) {
-				renderer.drawVertex(g, env, point, 700 + PANELOFFSET, 700 + PANELOFFSET, PANELOFFSET, framePosX, framePosY, scale, 6, Color.yellow);
+				renderer.drawVertex(g, env, point, new Point(PANELOFFSET, PANELOFFSET), new Point(framePosX, framePosY), scale, 6, Color.yellow);
 			}
 			
 			if(pointsClicked.size() > 0)
-			renderer.drawWall(g, env, new Wall(pointsClicked.get(pointsClicked.size()-1), nearestPoint), 700 + PANELOFFSET, 700 + PANELOFFSET ,PANELOFFSET, framePosX, framePosY, scale,0,Color.yellow);
+			renderer.drawWall(g, env, new Wall(pointsClicked.get(pointsClicked.size()-1), nearestPoint),new Point(PANELOFFSET, PANELOFFSET), new Point(framePosX, framePosY), scale,0,Color.yellow);
 			
 			
 			if(pointsClicked.size() > 1) {
@@ -391,7 +390,7 @@ public class EditorPanel extends JPanel implements ActionListener{
 						nextPoint = pointsClicked.get(0);
 						 
 					} else nextPoint = pointsClicked.get(i+1);
-					renderer.drawWall(g, env, new Wall(currentPoint, nextPoint), 700 + PANELOFFSET, 700 + PANELOFFSET, PANELOFFSET, framePosX, framePosY, scale,0, Color.yellow);
+					renderer.drawWall(g, env, new Wall(currentPoint, nextPoint), new Point(PANELOFFSET, PANELOFFSET), new Point(framePosX, framePosY), scale,0, Color.yellow);
 				}
 				
 				}
@@ -447,7 +446,7 @@ public class EditorPanel extends JPanel implements ActionListener{
 		float pointY = Math.round(mouseLocation.y / 100.0f) * 100;
 		//LogUtils.logInfo("Nearest point: {} - {}", this.getClass(), new Object[] {pointX, pointY});
 		this.nearestPoint = new Point(  (int) pointX, (int) pointY);
-		renderer.drawVertex(g, env, nearestPoint, 700+PANELOFFSET, 700+PANELOFFSET, PANELOFFSET, framePosX, framePosY, scale,6, Color.yellow);	
+		renderer.drawVertex(g, env, nearestPoint,new Point(PANELOFFSET, PANELOFFSET), new Point(framePosX, framePosY), scale,6, Color.yellow);
 		
 	}
 	

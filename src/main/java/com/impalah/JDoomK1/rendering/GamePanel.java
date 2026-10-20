@@ -1,8 +1,6 @@
 package com.impalah.JDoomK1.rendering;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
@@ -14,12 +12,13 @@ import com.impalah.JDoomK1.model.Player;
 import com.impalah.JDoomK1.model.environment.Environment;
 
 public class GamePanel extends JPanel implements ActionListener{
-	
+
 	private IRenderWorld engine;
 	private RenderObjects renderObj;
 	private Environment env;
 	private Player player;
-	
+	private RayCaster rayCaster = new RayCaster();
+
 	private final Timer timer = new Timer(20, this);
 
 	public GamePanel(IRenderWorld renderer2d, Environment env, Player player, RenderObjects renderObj) {
@@ -34,24 +33,27 @@ public class GamePanel extends JPanel implements ActionListener{
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getWidth(), getHeight());
-		
+
 		RenderUtils.drawDebugData(g2, 10, 10, "Xpos: " + player.getPosX() + " - Ypos: " + player.getPosY() + " Rotation: " + player.getRotation() +" | Time: " + LocalDateTime.now());
 		RenderUtils.drawDebugData(g2, 10, 20, "Left: " + renderObj.isRotateLeft() + " Right: " + renderObj.isRotateRight()  + " Up: " + renderObj.isMoveForward()  + " Down: " + renderObj.isMoveBackward() );
 		RenderUtils.drawDebugData(g2, 10, 40, "Current Sector: " + player.getCurrentSector().getId().toString());
 
-		engine.drawPlayer(g2, env, player, getWidth(), getHeight());
-		engine.drawMap(g2, env, getWidth(), getHeight(),0,0,0,1, player);
+		engine.drawPlayer(g2, env, player,new Point(0,0));
+		engine.drawMap(g2, env,new Point(0,0),new Point(0,0),1, player);
+		if(engine instanceof MovingWorldRenderer){
+			((MovingWorldRenderer) engine).drawRays(g, rayCaster.getRays(), new Point(0,0));
+		}
 		//renderer2D.drawMapAroundPlayer(g2, env, getWidth(), getHeight(), 0,0,0,1,player);
-		
+
 	}
 
 	public IRenderWorld getEngine() {
@@ -87,9 +89,10 @@ public class GamePanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		renderObj.updateObjects();
+		rayCaster.cast(player,env);
 		this.repaint();
-		
+
 	}
-	
+
 
 }

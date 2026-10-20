@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class Game {
 	
-	private final int SCREEN_X = 1000;
+	private final int SCREEN_X = 1500;
 	private final int SCREEN_Y = 1000;
 	
 	@Autowired
@@ -31,7 +31,7 @@ public class Game {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//Container pane = frame.getContentPane();
 		
-		Environment env = Seed.seedEnvironment();
+		Environment env = Seed.seedEnvironment(700,700);
 		//Environment env = Seed.seedOneWall();
 		
 		Player player = new Player(20,50, 10);
@@ -41,7 +41,7 @@ public class Game {
 		RenderObjects ro = new RenderObjects(player, env);
 		IRenderWorld engine;
 
-		movingWorldRenderer = new MovingWorldRenderer(env, player);
+		movingWorldRenderer = new MovingWorldRenderer(SCREEN_X, SCREEN_Y, env, player);
 
 
 		if(renderMode.equals("MWR")) engine = movingWorldRenderer;

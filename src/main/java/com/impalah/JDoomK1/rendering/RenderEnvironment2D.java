@@ -2,62 +2,63 @@ package com.impalah.JDoomK1.rendering;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.impalah.JDoomK1.model.CalculationValues;
 import com.impalah.JDoomK1.model.Player;
 import com.impalah.JDoomK1.model.environment.Environment;
 import com.impalah.JDoomK1.model.environment.Sector;
 import com.impalah.JDoomK1.model.environment.Wall;
-import com.impalah.JDoomK1.util.LogUtils;
 
-public class RenderEnvironment2D implements IRenderWorld {
+public class RenderEnvironment2D extends AbstractRenderEngine {
 	
 	private CalculationValues calcVals = new CalculationValues();
 	
-	public RenderEnvironment2D() {
-		
+	public RenderEnvironment2D(int rpX, int rpY, Environment e, Player p) {
+		super(rpX, rpY, e, p);
+	}
+
+	public RenderEnvironment2D(int rpX, int rpY) {
+		super(rpX, rpY);
 	}
 	
 
-	
-	public void drawMap(Graphics g, Environment env, int maxWidth, int maxHeight, int canvasOffset, int offsetX, int offsetY, double scale, Player p) {
+	@Override
+	public void drawMap(Graphics g, Environment env, Point canvasOffset, Point worldOffset, double scale, Player p) {
 		for (Sector sector : env.getSectors()) {
 			if(p != null) {
 				if(sector.getId().equals(p.getCurrentSector().getId())) {
-					drawSector(g, env, maxWidth, maxHeight, canvasOffset, offsetX, offsetY, scale,0, sector, Color.blue);
+					drawSector(g, env,canvasOffset, worldOffset, scale,0, sector, Color.blue);
 					
-				}else drawSector(g, env, maxWidth, maxHeight, canvasOffset, offsetX, offsetY, scale,0, sector, sector.getColor());
-			}else drawSector(g, env, maxWidth, maxHeight, canvasOffset, offsetX, offsetY, scale,0, sector, null);
+				}else drawSector(g, env, canvasOffset, worldOffset, scale,0, sector, sector.getColor());
+				}else drawSector(g, env, canvasOffset, worldOffset, scale,0, sector, null);
 			
 		}
 	}
 
 	@Override
-	public void drawSector(Graphics g, Environment env, int maxWidth, int maxHeight, int canvasOffset, int offsetX, int offsetY, double scale, int rotation, Sector s, Color c) {
+	public void drawSector(Graphics g, Environment env, Point canvasOffset, Point worldOffset, double scale, int rotation, Sector s, Color c) {
 
-		maxWidth = maxWidth + canvasOffset;
-		maxHeight = maxHeight + canvasOffset;
+		//maxWidth = maxWidth + canvasOffset;
+		//maxHeight = maxHeight + canvasOffset;
 
-		for (Wall w : s.getVertices()) {
+		for (Wall w : s.getWalls()) {
 
-			drawWall(g, env, w, maxWidth, maxHeight, canvasOffset, offsetX, offsetY, scale,0, c == null? s.getColor() : c);
+			drawWall(g, env, w, canvasOffset, worldOffset, scale,0, c == null? s.getColor() : c);
 		}
 
 	   for(Point p : s.getUniquePoints()) {
 
-			drawVertex(g, env, p, maxWidth, maxHeight, canvasOffset, offsetX, offsetY, scale,6, c);
+			drawVertex(g, env, p, canvasOffset, worldOffset, scale,6, c);
 		}
 
 	}
 
 	@Override
-	public void drawWall(Graphics g, Environment env, Wall wall, int maxWidth, int maxHeight, int canvasOffset, int offsetX, int offsetY, double scale, int rotation, Color c) {
+	public void drawWall(Graphics g, Environment env, Wall wall, Point canvasOffset, Point worldOffset, double scale, int rotation, Color c) {
 
-
+		int rpWidth = super.getRenderPaneWidth() + canvasOffset.x;
+		int rpHeight = super.getRenderPaneHeight() + canvasOffset.y;
 		//float b = wall.getStartY() - (wall.getStartX() * m);
 
 		//205 = 555 * -0.2 + b
@@ -65,28 +66,28 @@ public class RenderEnvironment2D implements IRenderWorld {
 		// ? = 555 * -0.2 + 280
 
 
-		Wall w = RenderUtils.convertWallToScreenSize(env, wall, maxWidth - canvasOffset, maxHeight - canvasOffset, scale);
+		Wall w = RenderUtils.convertWallToScreenSize(env, wall, rpWidth - canvasOffset.x, rpHeight - canvasOffset.y, scale);
 
 		//LogUtils.logInfo("start ({}, {}) end ({},{}), m= {} b= {}", this.getClass(), new Object[] {w.getStartX(), w.getStartY(), w.getEndX(), w.getEndY(), m});
 
 
-		w.setStartX(w.getStartX() - (int)(offsetX * scale) );
-		w.setEndX(w.getEndX() - (int)(offsetX * scale));
-		w.setStartY(w.getStartY() - (int)(offsetY * scale));
-		w.setEndY(w.getEndY() - (int)(offsetY * scale));
+		w.setStartX(w.getStartX() - (int)(worldOffset.x * scale) );
+		w.setEndX(w.getEndX() - (int)(worldOffset.x * scale));
+		w.setStartY(w.getStartY() - (int)(worldOffset.y * scale));
+		w.setEndY(w.getEndY() - (int)(worldOffset.y * scale));
 
-		w.setStartX(w.getStartX() + canvasOffset);
-		w.setStartY(w.getStartY() + canvasOffset);
-		w.setEndX(w.getEndX() + canvasOffset);
-		w.setEndY(w.getEndY() + canvasOffset);
+		w.setStartX(w.getStartX() + canvasOffset.x);
+		w.setStartY(w.getStartY() + canvasOffset.y);
+		w.setEndX(w.getEndX() + canvasOffset.x);
+		w.setEndY(w.getEndY() + canvasOffset.y);
 
 		//Left side and bottom of plane intersection
-		Point intersectionStartY = RenderUtils.getIntersectionStartY(w, canvasOffset);
-		Point intersectionStartX = RenderUtils.getIntersectionStartX(w, canvasOffset);
+		Point intersectionStartY = RenderUtils.getIntersectionStartY(w, canvasOffset.y);
+		Point intersectionStartX = RenderUtils.getIntersectionStartX(w, canvasOffset.x);
 
 		//right side and top of plane intersection
-		Point intersectionEndY = RenderUtils.getIntersectionEndY(w, canvasOffset);
-		Point intersectionEndX = RenderUtils.getIntersectionEndX(w, canvasOffset);
+		Point intersectionEndY = RenderUtils.getIntersectionEndY(w, canvasOffset.y);
+		Point intersectionEndX = RenderUtils.getIntersectionEndX(w, canvasOffset.x);
 
 		//LogUtils.logInfo("intersectionEndY: {} intersectionEndX: {}", this.getClass(), new Object[] {intersectionEndY.y, intersectionEndX.x});
 
@@ -105,68 +106,71 @@ public class RenderEnvironment2D implements IRenderWorld {
 			Wall cutOffWall = new Wall(w.getStartX(), w.getStartY(), w.getEndX(), w.getEndY());
 
 			//Endpoint
-			if(w.getStartX() < canvasOffset) {
+			if(w.getStartX() < canvasOffset.x) {
 				cutOffWall.setStartY(intersectionStartY.y);
-				cutOffWall.setStartX(canvasOffset);
+				cutOffWall.setStartX(canvasOffset.x);
 			}
 
-			if(w.getStartX() > maxWidth) {
+			if(w.getStartX() > rpWidth) {
 				cutOffWall.setStartY(intersectionEndY.y);
-				cutOffWall.setStartX(canvasOffset + maxWidth);
+				cutOffWall.setStartX(canvasOffset.x + rpWidth);
 			}
 
-			if(w.getStartY() < canvasOffset) {
+			if(w.getStartY() < canvasOffset.y) {
 				cutOffWall.setStartX(intersectionStartX.x);
-				cutOffWall.setStartY(canvasOffset);
+				cutOffWall.setStartY(canvasOffset.y);
 			}
-			if(w.getStartY() > maxHeight) {
+			if(w.getStartY() > rpHeight) {
 				cutOffWall.setStartX(intersectionEndX.x);
-				cutOffWall.setStartY(canvasOffset + maxHeight);
+				cutOffWall.setStartY(canvasOffset.y + rpHeight);
 			}
 
-			if(w.getEndX() < canvasOffset) {
+			if(w.getEndX() < canvasOffset.x) {
 				cutOffWall.setEndY(intersectionStartY.y);
-				cutOffWall.setEndX(canvasOffset);
+				cutOffWall.setEndX(canvasOffset.x);
 			}
 
-			if(w.getEndX() > maxWidth) {
+			if(w.getEndX() > rpWidth) {
 				cutOffWall.setEndY(intersectionEndY.y);
-				cutOffWall.setEndX(canvasOffset + maxWidth);
+				cutOffWall.setEndX(canvasOffset.x + rpWidth);
 			}
 
-			if(w.getEndY() < canvasOffset) {
+			if(w.getEndY() < canvasOffset.y) {
 				cutOffWall.setEndX(intersectionStartX.x);
-				cutOffWall.setEndY(canvasOffset);
+				cutOffWall.setEndY(canvasOffset.y);
 			}
-			if(w.getEndY() > maxHeight) {
+			if(w.getEndY() > rpHeight) {
 				cutOffWall.setEndX(intersectionEndX.x);
-				cutOffWall.setEndY(canvasOffset + maxHeight);
+				cutOffWall.setEndY(canvasOffset.y + rpHeight);
 			}
 
 			//LogUtils.logInfo("start ({}, {}) end ({},{})", this.getClass(), new Object[] {cutOffWall.getStartX(), cutOffWall.getStartY(), cutOffWall.getEndX(), cutOffWall.getEndY()});
 
-			if(!RenderUtils.determinPointOnScreen(new Point(cutOffWall.getStartX(), cutOffWall.getStartY()), canvasOffset, maxWidth) &&
-					!RenderUtils.determinPointOnScreen(new Point(cutOffWall.getEndX(), cutOffWall.getEndY()), canvasOffset, maxWidth)) {
+			if(!RenderUtils.determinPointOnScreen(new Point(cutOffWall.getStartX(), cutOffWall.getStartY()), canvasOffset.x, rpWidth) &&
+					!RenderUtils.determinPointOnScreen(new Point(cutOffWall.getEndX(), cutOffWall.getEndY()), canvasOffset.y, rpHeight)) {
 
-			} else RenderUtils.drawLineBetweenVertices(g, cutOffWall, c);
+			} else RenderUtils.drawLineBetweenPoints(g, cutOffWall, c);
 
 
 	}
 
-	public void drawVertex(Graphics g, Environment env, Point p, int maxWidth, int maxHeight, int canvasOffset, int offsetX, int offsetY, double scale, int size, Color c) {
-		Point newP = RenderUtils.convertPointToScreenSize(env, p, maxWidth-canvasOffset, maxHeight-canvasOffset, scale);
+	@Override
+	public void drawVertex(Graphics g, Environment env, Point p, Point canvasOffset, Point worldOffset, double scale, int size, Color c) {
+
+
+		Point newP = RenderUtils.convertPointToScreenSize(env, p, super.getRenderPaneWidth(), super.getRenderPaneHeight(), scale);
 
 		//LogUtils.logInfo("Point: {} - {}", this.getClass(), new Object[] {newP.x, newP.y});
 
-		newP.x -= (int) (offsetX * scale);
-		newP.y -= (int) (offsetY * scale);
+		newP.x -= (int) (worldOffset.x * scale);
+		newP.y -= (int) (worldOffset.y * scale);
 
-		newP.x += canvasOffset;
-		newP.y += canvasOffset;
+		newP.x += canvasOffset.x;
+		newP.y += canvasOffset.y;
 
 		//LogUtils.logInfo("Point after scaling: {} - {}", this.getClass(), new Object[] {newP.x, newP.y});
 
-		if((newP.x >= canvasOffset && newP.x <= maxWidth) && (newP.y >= canvasOffset && newP.y <= maxHeight)) {
+		if((newP.x >= canvasOffset.x && newP.x <= super.getRenderPaneWidth() + canvasOffset.x) && (newP.y >= canvasOffset.y && newP.y <= super.getRenderPaneHeight() + canvasOffset.y)) {
 			g.setColor(c == null? Color.red : c);
 			g.fillOval(newP.x - (int)(size/2), newP.y - (int)(size/2),size,size);
 			g.drawString(p.x + ", " + p.y, newP.x - size, newP.y - size);
@@ -174,9 +178,9 @@ public class RenderEnvironment2D implements IRenderWorld {
 	}
 
 
-	public void drawPlayer(Graphics g, Environment env,  Player p, int maxWidth, int maxHeight) {
+	public void drawPlayer(Graphics g, Environment env,  Player p, Point canvasOffset) {
 
-		p = RenderUtils.convertPlayerPositionsToScreenSize(p, env, maxWidth, maxHeight);
+		p = RenderUtils.convertPlayerPositionsToScreenSize(p, env, super.getRenderPaneWidth(), super.getRenderPaneHeight());
 
 		g.setColor(Color.white);
 
@@ -194,7 +198,7 @@ public class RenderEnvironment2D implements IRenderWorld {
 		g.setColor(Color.RED);
 		g.drawLine(p.getPosX(),
 				p.getPosY(),
-					(int) Math.round(-calcVals.cos(newRotation)*15 + p.getPosX()),
+					(int) Math.round(-calcVals.cos(newRotation)*15 + p.getPosX()), //Position X, length of 15
 					(int) Math.round(calcVals.sin(newRotation)*15 + p.getPosY())
 				);
 

@@ -6,18 +6,16 @@ import com.impalah.JDoomK1.model.environment.Wall;
 import com.impalah.JDoomK1.util.LogUtils;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class RenderUtils {
 
-    public static Player convertPlayerPositionsToScreenSize(Player p, Environment env, int maxWidth, int maxHeight){
+    public static Player convertPlayerPositionsToScreenSize(Player p, Environment env, int renderPaneWidth, int renderPaneHeight){
 
         Player newP = new Player();
 
 
-        double multiplierX = (double) maxWidth / env.getMAX_X();
-        double multiplierY = (double) maxHeight / env.getMAX_Y();
+        double multiplierX = (double) renderPaneWidth / env.getMAX_X();
+        double multiplierY = (double) renderPaneHeight / env.getMAX_Y();
 
         newP.setPosX ((int) Math.round(p.getPosX() * multiplierX));
         newP.setPosY((int) Math.round(p.getPosY() * multiplierY));
@@ -32,12 +30,13 @@ public abstract class RenderUtils {
     public Wall convertWallAroundPlayer(Wall w){
         return null;
     }
+    
 
-    public static Wall convertWallToScreenSize(Environment env, Wall v, int maxWidth, int maxHeight, double scale) {
+    public static Wall convertWallToScreenSize(Environment env, Wall v, int renderPaneWidth, int renderPaneHeight, double scale) {
         Wall newVertex = new Wall();
 
-        double multiplierX = (double) maxWidth / env.getMAX_X();
-        double multiplierY = (double) maxHeight / env.getMAX_Y();
+        double multiplierX = (double) renderPaneWidth / env.getMAX_X();
+        double multiplierY = (double) renderPaneHeight / env.getMAX_Y();
 
         newVertex.setStartX((int) ((v.getStartX() * scale) * multiplierX));
         newVertex.setStartY((int) ((v.getStartY() * scale) * multiplierY));
@@ -48,10 +47,10 @@ public abstract class RenderUtils {
 
     }
 
-    public static Point convertPointToScreenSize(Environment env, Point p, int maxWidth, int maxHeight, double scale) {
+    public static Point convertPointToScreenSize(Environment env, Point p, int renderPaneWidth, int renderPaneHeight, double scale) {
 
-        double multiplierX = (double) maxWidth / env.getMAX_X();
-        double multiplierY = (double) maxHeight / env.getMAX_Y();
+        double multiplierX = (double) renderPaneWidth / env.getMAX_X();
+        double multiplierY = (double) renderPaneHeight / env.getMAX_Y();
 
         int newX = (int) (p.x * multiplierX * scale);
         int newY = (int) (p.y * multiplierY * scale);
@@ -59,10 +58,10 @@ public abstract class RenderUtils {
         return new Point(newX, newY );
     }
 
-    public static Point convertPointToEnvironmentSize(Environment env, Point p, int maxWidth, int maxHeight) {
+    public static Point convertPointToEnvironmentSize(Environment env, Point p, int renderPaneWidth, int renderPaneHeight) {
 
-        double multiplierX = (double)  env.getMAX_X() / maxWidth;
-        double multiplierY = (double) env.getMAX_Y() / maxHeight;
+        double multiplierX = (double)  env.getMAX_X() / renderPaneWidth;
+        double multiplierY = (double) env.getMAX_Y() / renderPaneHeight;
 
         return new Point((int) Math.round(p.x * multiplierX), (int) Math.round(p.y * multiplierY));
     }
@@ -79,7 +78,7 @@ public abstract class RenderUtils {
     }
 
 
-    public static Point getIntersectionStartX(Wall w, int canvasOffset) {
+    public static Point getIntersectionStartX(Wall  w, int canvasOffset) {
 
         if(w.getStartX() == w.getEndX()) {
             return new Point(w.getEndX(), canvasOffset);
@@ -126,13 +125,13 @@ public abstract class RenderUtils {
 
     }
 
-    public static boolean determinPointOnScreen(Point p, int canvasOffset, int maxWidth) {
-        if(p.x > canvasOffset && p.x < maxWidth && p.y > canvasOffset && p.y < maxWidth ) {
+    public static boolean determinPointOnScreen(Point p, int canvasOffset, int renderPaneWidth) {
+        if(p.x > canvasOffset && p.x < renderPaneWidth && p.y > canvasOffset && p.y < renderPaneWidth ) {
             return true;
         } else return false;
     }
 
-    public static void drawLineBetweenVertices(Graphics g, Wall v, Color c) {
+    public static void drawLineBetweenPoints(Graphics g, Wall v, Color c) {
         g.setColor(c);
         g.drawLine(v.startX,
                 v.startY,
@@ -140,8 +139,58 @@ public abstract class RenderUtils {
                 v.endY);
     }
 
+    public static Point getWallsIntersectionPoint(Wall w1, Wall w2){
+        float m1 = ((float)w1.getStartY() - w1.getEndY()) / ((float)(w1.getStartX() - w1.getEndX() == 0 ? 1 : ((float)w1.getStartX() - w1.getEndX())));
+        float b1 = w1.getStartY() - (w1.getStartX() * m1);
+
+        float m2 = ((float)w2.getStartY() - w2.getEndY()) / ((float)(w2.getStartX() - w2.getEndX() == 0 ? 1 : ((float)w2.getStartX() - w2.getEndX())));
+        float b2 = w2.getStartY() - (w2.getStartX() * m2);
+
+        if (Math.abs(m1 - m2) < 1e-6f) return null;
+
+        float x = (b2 - b1) / (m1 - m2);
+        float y = m1 * x + b1;
+
+
+        return new Point(Math.round(x),Math.round(y));
+    }
+
+    public static Point getWallIntersectionRadial(Wall wall, Point startingPoint, double rotation){
+        double rad = Math.toRadians(rotation);
+        double dx = Math.cos(rad);                       // ray direction
+        double dy = Math.sin(rad);
+
+        double ex = wall.getEndX() - wall.getStartX();   // wall direction
+        double ey = wall.getEndY() - wall.getStartY();
+
+        double denom = dx * ey - dy * ex;
+        if (Math.abs(denom) < 1e-9) return null;         // ray parallel to wall
+
+        double wx = wall.getStartX() - startingPoint.x;
+        double wy = wall.getStartY() - startingPoint.y;
+
+        double t = (wx * ey - wy * ex) / denom;          // distance along the ray
+        double u = (wx * dy - wy * dx) / denom;          // position along the wall, 0..1
+
+        if (t < 0) return null;                          // wall is behind the ray
+        if (u < 0 || u > 1) return null;                 // crossing is beyond the wall's ends
+
+        return new Point(
+                (int) Math.round(startingPoint.x + dx * t),
+                (int) Math.round(startingPoint.y + dy * t));
+    }
+
     public static void drawDebugData(Graphics g, int posX, int posY, String text) {
         g.setColor(Color.white);
         g.drawString(text, posX, posY);
+    }
+
+    //Calculate wether point is on a line
+    private static boolean isOnSegment(Wall w, float x, float y) {
+        float eps = 0.5f;
+        return x >= Math.min(w.getStartX(), w.getEndX()) - eps
+                && x <= Math.max(w.getStartX(), w.getEndX()) + eps
+                && y >= Math.min(w.getStartY(), w.getEndY()) - eps
+                && y <= Math.max(w.getStartY(), w.getEndY()) + eps;
     }
 }

@@ -10,17 +10,17 @@ import java.util.stream.Collectors;
 
 public class Sector {
 	private UUID id;
-	private List<Wall> vertices;
+	private List<Wall> walls;
 	private Color color;
 	
 	public Sector() {
-		this.vertices = new ArrayList<Wall>();
+		this.walls = new ArrayList<Wall>();
 		this.color = Color.red;
 		this.id = UUID.randomUUID();
 	}
 
-	public Sector(List<Wall> vertices, Color color) {
-		this.vertices = vertices;
+	public Sector(List<Wall> walls, Color color) {
+		this.walls = walls;
 		this.color = color;
 		this.id = UUID.randomUUID();
 	}
@@ -42,9 +42,9 @@ public class Sector {
 	}
 	
 	public void addVertex(Wall v) {
-		if(vertices.size() > 0) {
+		if(walls.size() > 0) {
 			boolean foundV = false;
-			for (Wall vertex : vertices) {
+			for (Wall vertex : walls) {
 				//vertex exists
 				if (v.compareTo(vertex) == 0) {
 					foundV = true;
@@ -52,17 +52,17 @@ public class Sector {
 			}
 			
 			if(!foundV) {
-				vertices.add(v);
+				walls.add(v);
 			}
 			
 		} else {
-			vertices.add(v);
+			walls.add(v);
 		}
 	}
 	
 	public List<Point> getUniquePoints() {
 		List<Point> points = new ArrayList<>();
-		for (Wall wall : vertices) {
+		for (Wall wall : walls) {
 			Point startPoint = new Point(wall.getStartX(), wall.getStartY());
 			Point endPoint = new Point(wall.getEndX(), wall.getEndY());
 			
@@ -134,12 +134,12 @@ public class Sector {
 		return new Point((int) Math.round(Collections.min(xVals)), (int) Math.round( Collections.min(yVals)));
 	}
 
-	public List<Wall> getVertices() {
-		return vertices;
+	public List<Wall> getWalls() {
+		return walls;
 	}
 
-	public void setVertices(List<Wall> vertices) {
-		this.vertices = vertices;
+	public void setWalls(List<Wall> walls) {
+		this.walls = walls;
 	}
 
 	public Color getColor() {

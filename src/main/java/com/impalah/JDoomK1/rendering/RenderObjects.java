@@ -82,6 +82,10 @@ public class RenderObjects {
 		
 		
 	}
+
+	public void calculateRays(){
+
+	}
 	
 	public void calculateCurrentSector() {
 		

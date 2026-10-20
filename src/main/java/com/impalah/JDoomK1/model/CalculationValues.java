@@ -14,8 +14,8 @@ public class CalculationValues {
 	public CalculationValues() {
 		
 		for (int i = 0; i < 360; i++) {
-			this.allCos[i] = Math.cos(i/180.0*Math.PI);
-			this.allSin[i] = Math.sin(i/180.0*Math.PI);
+			this.allCos[i] = Math.cos(Math.toRadians(i));
+			this.allSin[i] = Math.sin(Math.toRadians(i));
 		}
 	}
 
