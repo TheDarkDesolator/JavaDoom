@@ -13,16 +13,18 @@ import java.awt.*;
 
 public class GameWithMinimap {
 	
-	private final int SCREEN_X = 1000;
+	private final int SCREEN_X = 1200;
 	private final int SCREEN_Y = 900;
 
-	private final Point mainGameSize = new Point(700,700);
+	private final Point mainGameSize = new Point(900,900);
 	private final Point minimapSize = new Point(70,70);
 
 	@Autowired
 	private RenderEnvironment2D renderer2D;
 
 	private MovingWorldRenderer movingWorldRenderer;
+
+	private RaycastRenderer rayCastRenderer;
 
 	@Value("${doom.config.engine.mode}")
 	private String renderMode;
@@ -43,8 +45,10 @@ public class GameWithMinimap {
 		IRenderWorld engine;
 
 		movingWorldRenderer = new MovingWorldRenderer(mainGameSize.x, mainGameSize.y, env, player);
+		rayCastRenderer = new RaycastRenderer(mainGameSize.x, mainGameSize.y, env, player);
 
 		if(renderMode.equals("MWR")) engine = movingWorldRenderer;
+		else if(renderMode.equals("RCR")) engine = rayCastRenderer;
 		else engine = renderer2D;
 
 		GamePanelMiniMap myRenderPanel = new GamePanelMiniMap(engine, env, player, ro);

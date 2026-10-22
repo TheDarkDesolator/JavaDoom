@@ -17,7 +17,7 @@ public class GamePanel extends JPanel implements ActionListener{
 	private RenderObjects renderObj;
 	private Environment env;
 	private Player player;
-	private RayCaster rayCaster = new RayCaster();
+	private RayCaster rayCaster = new RayCaster(900);
 
 	private final Timer timer = new Timer(20, this);
 

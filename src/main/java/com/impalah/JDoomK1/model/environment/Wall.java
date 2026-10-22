@@ -1,6 +1,6 @@
 package com.impalah.JDoomK1.model.environment;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.Map;
 
 public class Wall implements Comparable<Wall> {
@@ -13,6 +13,8 @@ public class Wall implements Comparable<Wall> {
 
 	private int startZ;
 	private int endZ;
+
+	private Color color;
 
 
 	public Wall(int startX, int startY, int endX, int endY, int startZ, int endZ) {
@@ -101,12 +103,13 @@ public class Wall implements Comparable<Wall> {
 		this.endY = endY;
 	}
 
+	public Color getColor() {
+		return color;
+	}
 
-	
-
-
-
-
+	public void setColor(Color color) {
+		this.color = color;
+	}
 
 	@Override
 	public int compareTo(Wall o) {

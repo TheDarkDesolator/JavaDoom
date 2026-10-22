@@ -26,6 +26,8 @@ public class Seed {
 		hallVertices.add(new Wall(7500, 4800, 7500, 2500));
 		hallVertices.add(new Wall(2500, 2500, 7500, 2500));
 
+		hallVertices.forEach(w -> w.setColor(Color.red));
+
 		Sector hall = new Sector(hallVertices, Color.red);
 
 		// West room: three walls, the hall's west wall is its fourth side
@@ -35,6 +37,8 @@ public class Seed {
 		westRoomVertices.add(new Wall(1200, 6200, 2500, 6200));
 		westRoomVertices.add(new Wall(2500, 3800, 1200, 3800));
 
+		westRoomVertices.forEach(w -> w.setColor(Color.green));
+
 		Sector westRoom = new Sector(westRoomVertices, Color.green);
 
 		// East room: same idea
@@ -43,6 +47,8 @@ public class Seed {
 		eastRoomVertices.add(new Wall(7500, 6300, 8700, 6300));
 		eastRoomVertices.add(new Wall(8700, 6300, 8700, 3800));
 		eastRoomVertices.add(new Wall(8700, 3800, 7500, 3800));
+
+		eastRoomVertices.forEach(w -> w.setColor(Color.yellow));
 
 		Sector eastRoom = new Sector(eastRoomVertices, Color.yellow);
 
@@ -55,6 +61,8 @@ public class Seed {
 		centralRoomVertices.add(new Wall(4300, 5700, 4800, 5700));
 		centralRoomVertices.add(new Wall(5200, 5700, 5700, 5700));
 
+		centralRoomVertices.forEach(w -> w.setColor(Color.blue));
+
 		Sector centralRoom = new Sector(centralRoomVertices, Color.blue);
 
 		// Pillar, north-west
@@ -64,6 +72,8 @@ public class Seed {
 		pillar1Vertices.add(new Wall(3300, 3700, 3700, 3700));
 		pillar1Vertices.add(new Wall(3700, 3700, 3700, 3300));
 		pillar1Vertices.add(new Wall(3300, 3300, 3700, 3300));
+
+		pillar1Vertices.forEach(w -> w.setColor(Color.orange));
 
 		Sector pillar1 = new Sector(pillar1Vertices, Color.orange);
 
@@ -75,6 +85,8 @@ public class Seed {
 		pillar2Vertices.add(new Wall(6700, 3700, 6700, 3300));
 		pillar2Vertices.add(new Wall(6300, 3300, 6700, 3300));
 
+		pillar2Vertices.forEach(w -> w.setColor(Color.orange));
+
 		Sector pillar2 = new Sector(pillar2Vertices, Color.orange);
 
 		// Pillar, south-west
@@ -84,6 +96,8 @@ public class Seed {
 		pillar3Vertices.add(new Wall(3300, 6700, 3700, 6700));
 		pillar3Vertices.add(new Wall(3700, 6700, 3700, 6300));
 		pillar3Vertices.add(new Wall(3300, 6300, 3700, 6300));
+
+		pillar3Vertices.forEach(w -> w.setColor(Color.orange));
 
 		Sector pillar3 = new Sector(pillar3Vertices, Color.orange);
 
@@ -95,6 +109,8 @@ public class Seed {
 		pillar4Vertices.add(new Wall(6700, 6700, 6700, 6300));
 		pillar4Vertices.add(new Wall(6300, 6300, 6700, 6300));
 
+		pillar4Vertices.forEach(w -> w.setColor(Color.orange));
+
 		Sector pillar4 = new Sector(pillar4Vertices, Color.orange);
 
 		// Triangular pillar: angled walls to exercise the raycaster
@@ -103,6 +119,8 @@ public class Seed {
 		trianglePillarVertices.add(new Wall(4700, 2900, 5300, 2900));
 		trianglePillarVertices.add(new Wall(5300, 2900, 5000, 3400));
 		trianglePillarVertices.add(new Wall(5000, 3400, 4700, 2900));
+
+		trianglePillarVertices.forEach(w -> w.setColor(Color.magenta));
 
 		Sector trianglePillar = new Sector(trianglePillarVertices, Color.magenta);
 

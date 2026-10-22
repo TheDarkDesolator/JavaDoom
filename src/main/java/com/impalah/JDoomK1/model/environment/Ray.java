@@ -24,6 +24,10 @@ public class Ray {
         this.intersectionPoint = new Point(9999,9999);
     }
 
+    public void calculateDistance(double rotation){
+        this.distance = Point2D.distance(startingPoint.x, startingPoint.y, intersectionPoint.x, intersectionPoint.y) * Math.cos(Math.toRadians(rotation));
+    }
+
     public Point getStartingPoint() {
         return startingPoint;
     }

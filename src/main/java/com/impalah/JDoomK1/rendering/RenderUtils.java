@@ -139,6 +139,18 @@ public abstract class RenderUtils {
                 v.endY);
     }
 
+    public static void drawColumn(Graphics g, Wall v, Color c) {
+        int top = Math.min(v.startY, v.endY);
+        int height = Math.abs(v.endY - v.startY);
+
+        g.setColor(c);
+        g.fillRect(v.startX, top, 1, height);
+    }
+
+    public static void drawLineBetweenPoints(Graphics g, Point p1, Point p2, Color c){
+        drawLineBetweenPoints(g, new Wall(p1, p2), c);
+    }
+
     public static Point getWallsIntersectionPoint(Wall w1, Wall w2){
         float m1 = ((float)w1.getStartY() - w1.getEndY()) / ((float)(w1.getStartX() - w1.getEndX() == 0 ? 1 : ((float)w1.getStartX() - w1.getEndX())));
         float b1 = w1.getStartY() - (w1.getStartX() * m1);

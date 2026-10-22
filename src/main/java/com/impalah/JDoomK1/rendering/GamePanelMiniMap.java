@@ -28,7 +28,7 @@ public class GamePanelMiniMap extends JPanel implements ActionListener{
 	private Environment env;
 	private Environment miniMapEnv;
 	private Player player;
-	private RayCaster rayCaster = new RayCaster();
+	private RayCaster rayCaster = new RayCaster(900);
 
 	private final Timer timer = new Timer(20, this);
 
@@ -67,11 +67,19 @@ public class GamePanelMiniMap extends JPanel implements ActionListener{
 		//RenderUtils.drawDebugData(g2, 10, 20, "Left: " + renderObj.isRotateLeft() + " Right: " + renderObj.isRotateRight()  + " Up: " + renderObj.isMoveForward()  + " Down: " + renderObj.isMoveBackward() );
 		//RenderUtils.drawDebugData(g2, 10, 40, "Current Sector: " + player.getCurrentSector().getId().toString());
 
-		mainEngine.drawPlayer(g2, env, player, new Point(0,0));
-		mainEngine.drawMap(g2, env,new Point(0,0),new Point(0,0),1, player);
-		if(mainEngine instanceof MovingWorldRenderer){
-			((MovingWorldRenderer)mainEngine).drawRays(g, rayCaster.getRays(), new Point(0,0));
+		if(mainEngine instanceof RaycastRenderer){
+			((RaycastRenderer)mainEngine).drawMapByRays(g2,rayCaster.getRays());
+		} else {
+			mainEngine.drawPlayer(g2, env, player, new Point(0,0));
+			mainEngine.drawMap(g2, env,new Point(0,0),new Point(0,0),1, player);
+			if(mainEngine instanceof MovingWorldRenderer){
+				((MovingWorldRenderer)mainEngine).drawRays(g, rayCaster.getRays(), new Point(0,0));
+			}
 		}
+
+
+
+
 
 
 		minimapRenderer.drawPlayer(g2, miniMapEnv, player, new Point(env.getPanelWidth() + 30, 30));
