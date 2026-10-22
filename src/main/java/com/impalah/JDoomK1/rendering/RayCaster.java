@@ -37,13 +37,43 @@ public class RayCaster {
         for (double i = lowerFOV; i < upperFOV; i+= raySteps) {
             Ray r = new Ray(start);
 
+            /*
+             * Flat-screen ray angle (corrects the distortion from equally spaced angles)
+             *
+             * The loop walks i in equal angle steps from (rotation + 45) to (rotation + 135).
+             * Screen columns, however, sit at equal distances on a flat projection plane, and
+             * equal angles do not map to equal distances on a plane (the relationship is a
+             * tangent). Left alone, straight walls bend. This line re-maps each equal-step
+             * angle to the angle at which that column really sits on a flat screen.
+             *
+             * facing    = p.getRotation() + 90            centre of the view, in degrees
+             * offset    = i - facing                      how far this ray is from the centre,
+             *                                             -45 (left edge) to +45 (right edge)
+             * position  = offset / 45                     the same thing as a fraction of the half-view,
+             *                                             -1 (left edge) to +1 (right edge)
+             * screenPos = tan(45 degrees) * position      where that column lies on the flat plane,
+             *                                             in units of the plane's half-width. Edges stay
+             *                                             at +/-1 because tan(45 degrees) = 1, so the
+             *                                             edge rays do not move.
+             * angle     = facing + atan(screenPos)        the angle the ray must point at, converted
+             *                                             from radians back to degrees
+             *
+             * The 45 appears twice and means "half the field of view in degrees". If the FOV
+             * changes, change both occurrences.
+             *
+             * The same angle must be used for the fisheye correction:
+             *     beta = angle - facing
+             * That is, the ray's real angle from the view centre, not the equal-step one.
+             */
+            double angle = (p.getRotation() + 90) + Math.toDegrees(Math.atan(Math.tan(Math.toRadians(45)) * (i - (p.getRotation() + 90)) / 45));
+
             double shortestDistance = Double.MAX_VALUE;
             Point nearest = null;
             Wall nearestWall = null;
 
             for (Wall wall : e.getAllWalls()) {
 
-                Point hit = RenderUtils.getWallIntersectionRadial(wall, start, -i);
+                Point hit = RenderUtils.getWallIntersectionRadial(wall, start, -angle);
                 if (hit == null) continue;
 
                 double distance = hit.distance(start);
@@ -63,10 +93,16 @@ public class RayCaster {
                         (int) Math.round(start.y + Math.sin(rad) * maxLength));
             }
 
+            if(nearestWall != null){
+                if(nearest.equals(new Point(nearestWall.getStartX(), nearestWall.getStartY())) || nearest.equals(new Point(nearestWall.getEndX(), nearestWall.getEndY()))){
+                    r.setEdge(true);
+                }
+            }
+
             r.setIntersectionPoint(nearest);
             r.setWall(nearestWall);
             //Beta is how far the ray sits from the centre of the 'fan of rays' (-45 to +45)
-            double beta = i - (p.getRotation() + 90);
+            double beta = angle - (p.getRotation() + 90);
             r.calculateDistance(beta);
 
             rays.add(r);

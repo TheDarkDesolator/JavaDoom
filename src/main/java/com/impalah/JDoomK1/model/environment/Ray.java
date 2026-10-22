@@ -9,6 +9,7 @@ public class Ray {
     private Point intersectionPoint;
     private double distance;
     private Wall wall;
+    private boolean isEdge;
 
     public Ray(){
 
@@ -58,5 +59,13 @@ public class Ray {
 
     public Wall getWall() {
         return wall;
+    }
+
+    public boolean isEdge() {
+        return isEdge;
+    }
+
+    public void setEdge(boolean edge) {
+        isEdge = edge;
     }
 }

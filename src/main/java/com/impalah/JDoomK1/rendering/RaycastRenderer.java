@@ -74,8 +74,14 @@ public class RaycastRenderer extends AbstractRenderEngine{
             );
 
             RenderUtils.drawColumn(g, floorToWall, Color.white);
-            RenderUtils.drawColumn(g, wallSlice, currentRay.getWall().getColor());
-            RenderUtils.drawColumn(g, ceilingToWall, Color.black);
+            if(currentRay.isEdge()){
+
+                RenderUtils.drawColumn(g, wallSlice, Color.black);
+            } else {
+
+                RenderUtils.drawColumn(g, wallSlice, currentRay.getWall().getColor());
+            }
+            RenderUtils.drawColumn(g, ceilingToWall, Color.darkGray);
             //RenderUtils.drawLineBetweenPoints(g, new Point(i,0), new Point(i, super.getEnv().getPanelHeight()), currentRay.getWall().getColor());
         }
     }
