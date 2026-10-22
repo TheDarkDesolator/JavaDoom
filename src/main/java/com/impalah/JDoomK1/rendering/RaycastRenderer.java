@@ -8,14 +8,25 @@ import com.impalah.JDoomK1.model.environment.Wall;
 import com.impalah.JDoomK1.util.LogUtils;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
 
 public class RaycastRenderer extends AbstractRenderEngine{
 
-    private final int WALL_HEIGHT = 240;
+    private final int WALL_HEIGHT = 128;
+
+    private TextureMapper textureMapper = new TextureMapper();
+
+    private BufferedImage wallTexture;
 
     public RaycastRenderer(int rpX, int rpY, Environment e, Player p){
         super(rpX, rpY, e, p);
+        try {
+            this.wallTexture = textureMapper.loadWall();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public RaycastRenderer(int rpX, int rpY){
@@ -79,7 +90,8 @@ public class RaycastRenderer extends AbstractRenderEngine{
                 RenderUtils.drawColumn(g, wallSlice, Color.black);
             } else {
 
-                RenderUtils.drawColumn(g, wallSlice, currentRay.getWall().getColor());
+                //RenderUtils.drawColumn(g, wallSlice, currentRay.getWall().getColor());
+                RenderUtils.drawColumnImage(g, currentRay, wallSlice, wallTexture);
             }
             RenderUtils.drawColumn(g, ceilingToWall, Color.darkGray);
             //RenderUtils.drawLineBetweenPoints(g, new Point(i,0), new Point(i, super.getEnv().getPanelHeight()), currentRay.getWall().getColor());
