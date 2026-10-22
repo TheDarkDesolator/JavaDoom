@@ -2,10 +2,12 @@ package com.impalah.JDoomK1.rendering;
 
 import com.impalah.JDoomK1.model.Player;
 import com.impalah.JDoomK1.model.environment.Environment;
+import com.impalah.JDoomK1.model.environment.Ray;
 import com.impalah.JDoomK1.model.environment.Wall;
 import com.impalah.JDoomK1.util.LogUtils;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public abstract class RenderUtils {
 
@@ -145,6 +147,26 @@ public abstract class RenderUtils {
 
         g.setColor(c);
         g.fillRect(v.startX, top, 1, height);
+    }
+
+    public static void drawColumnImage(Graphics g, Ray r, Wall slice, Image texture) {
+        Wall world = r.getWall();
+        int texW = texture.getWidth(null);
+        int texH = texture.getHeight(null);
+
+        // how far along the world wall the ray landed -> which texture column
+        int along = (int) Point.distance(world.getStartX(), world.getStartY(),
+                r.getIntersectionPoint().x, r.getIntersectionPoint().y);
+        int texX = along % texW;
+
+        // where to draw on screen, taken from the slice
+        int top = Math.min(slice.startY, slice.endY);
+        int bottom = Math.max(slice.startY, slice.endY);
+
+        g.drawImage(texture,
+                slice.startX, top, slice.startX + 1, bottom,   // destination corners
+                texX, 0, texX + 1, texH,                       // source: one column, full height
+                null);
     }
 
     public static void drawLineBetweenPoints(Graphics g, Point p1, Point p2, Color c){
